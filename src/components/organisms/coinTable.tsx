@@ -1,5 +1,4 @@
-// src/components/organisms/CoinTable.tsx
-import { useState } from 'react'
+// src/components/organisms/coinTable.tsx
 import { CoinRow } from '@/components/molecules/coinRow'
 import { Pagination } from '@/components/molecules/pagination'
 import { LoadingSpinner, SkeletonLoader } from '@/components/atoms'
@@ -15,9 +14,6 @@ interface CoinData {
   marketCap: number
   volume24h: number
 }
-
-type SortField = 'rank' | 'name' | 'currentPrice' | 'priceChangePercentage24h' | 'marketCap' | 'volume24h'
-type SortDirection = 'asc' | 'desc'
 
 interface CoinTableProps {
   data: CoinData[]
@@ -36,50 +32,8 @@ export const CoinTable = ({
   onPageChange,
   onCoinClick 
 }: CoinTableProps) => {
-  const [sortField, setSortField] = useState<SortField>('rank')
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
-
-  const handleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
-    } else {
-      setSortField(field)
-      setSortDirection('asc')
-    }
-  }
-
-  const sortedData = [...data].sort((a, b) => {
-    const aValue = a[sortField]
-    const bValue = b[sortField]
-    const multiplier = sortDirection === 'asc' ? 1 : -1
-    
-    if (typeof aValue === 'string' && typeof bValue === 'string') {
-      return aValue.localeCompare(bValue) * multiplier
-    }
-    return ((aValue as number) - (bValue as number)) * multiplier
-  })
-
-  const SortIcon = ({ active, direction }: { active: boolean; direction: SortDirection }) => (
-    <svg className={`w-4 h-4 ml-1 transition-colors ${active ? 'text-primary-600' : 'text-neutral-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      {direction === 'asc' ? (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-      ) : (
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-      )}
-    </svg>
-  )
-
-  const TableHeader = ({ field, label }: { field: SortField; label: string }) => (
-    <th 
-      onClick={() => handleSort(field)}
-      className="px-6 py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider cursor-pointer hover:bg-neutral-100 transition-colors"
-    >
-      <div className="flex items-center">
-        {label}
-        <SortIcon active={sortField === field} direction={sortDirection} />
-      </div>
-    </th>
-  )
+  // Always sort by rank (ascending)
+  const sortedData = [...data].sort((a, b) => a.rank - b.rank)
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
@@ -88,19 +42,23 @@ export const CoinTable = ({
         <table className="w-full">
           <thead className="bg-neutral-50 border-b border-neutral-200">
             <tr>
-              <TableHeader field="rank" label="#" />
-              <TableHeader field="name" label="Name" />
-              <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
-                <TableHeader field="currentPrice" label="Price" />
+              <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+                #
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+                Name
               </th>
               <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
-                <TableHeader field="priceChangePercentage24h" label="24h Change" />
+                Price
               </th>
               <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
-                <TableHeader field="marketCap" label="Market Cap" />
+                24h Change
               </th>
               <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
-                <TableHeader field="volume24h" label="Volume 24h" />
+                Market Cap
+              </th>
+              <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+                Volume 24h
               </th>
             </tr>
           </thead>
@@ -133,7 +91,10 @@ export const CoinTable = ({
               // Empty State
               <tr>
                 <td colSpan={6} className="px-6 py-12 text-center">
-                  <div className="text-neutral-500">
+                  <div className="flex flex-col items-center justify-center text-neutral-500">
+                    <svg className="w-16 h-16 mb-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                     <p className="text-lg font-semibold mb-2">No cryptocurrencies found</p>
                     <p className="text-sm">Try adjusting your search or filters</p>
                   </div>
@@ -157,3 +118,4 @@ export const CoinTable = ({
     </div>
   )
 }
+
