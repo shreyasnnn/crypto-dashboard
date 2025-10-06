@@ -1,0 +1,29 @@
+@config "../tailwind.config.ts";
+@import "tailwindcss";
+@import "tailwindcss/utilities";
+
+/* Custom component classes for crypto dashboard */
+@layer components {
+  .coin-price-positive {
+    @apply text-success-600 bg-success-50 px-2 py-1 rounded-md text-sm font-medium;
+  }
+  
+  .coin-price-negative {
+    @apply text-danger-600 bg-danger-50 px-2 py-1 rounded-md text-sm font-medium;
+  }
+  
+  .skeleton {
+    @apply animate-pulse-slow bg-gray-200 rounded-md;
+  }
+  
+  .crypto-table-header {
+    @apply text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 transition-colors;
+  }
+}
+
+/* Base styles */
+@layer base {
+  body {
+    @apply font-sans antialiased bg-gray-50;
+  }
+}
