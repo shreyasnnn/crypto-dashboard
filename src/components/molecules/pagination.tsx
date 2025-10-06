@@ -1,0 +1,111 @@
+// src/components/molecules/Pagination.tsx
+import { Button } from '@/components/atoms'
+
+interface PaginationProps {
+  currentPage: number
+  totalPages: number
+  onPageChange: (page: number) => void
+  itemsPerPage?: number
+  totalItems?: number
+}
+
+export const Pagination = ({ 
+  currentPage, 
+  totalPages, 
+  onPageChange,
+  itemsPerPage,
+  totalItems 
+}: PaginationProps) => {
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = []
+    const maxVisible = 5
+
+    if (totalPages <= maxVisible) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i)
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) pages.push(i)
+        pages.push('...')
+        pages.push(totalPages)
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1)
+        pages.push('...')
+        for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i)
+      } else {
+        pages.push(1)
+        pages.push('...')
+        pages.push(currentPage - 1)
+        pages.push(currentPage)
+        pages.push(currentPage + 1)
+        pages.push('...')
+        pages.push(totalPages)
+      }
+    }
+    return pages
+  }
+
+  return (
+    <div className="flex items-center justify-between px-6 py-4 bg-white border-t border-neutral-200">
+      {/* Info */}
+      <div className="text-sm text-neutral-600">
+        {itemsPerPage && totalItems && (
+          <span>
+            Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} results
+          </span>
+        )}
+      </div>
+
+      {/* Pagination Controls */}
+      <div className="flex items-center gap-2">
+        {/* Previous Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={currentPage === 1}
+          onClick={() => onPageChange(currentPage - 1)}
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Previous
+        </Button>
+
+        {/* Page Numbers */}
+        <div className="hidden md:flex items-center gap-1">
+          {getPageNumbers().map((page, index) => (
+            page === '...' ? (
+              <span key={`ellipsis-${index}`} className="px-3 py-1 text-neutral-500">...</span>
+            ) : (
+              <Button
+                key={page}
+                variant={currentPage === page ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => onPageChange(page as number)}
+              >
+                {page}
+              </Button>
+            )
+          ))}
+        </div>
+
+        {/* Mobile Page Indicator */}
+        <div className="md:hidden text-sm text-neutral-600">
+          Page {currentPage} of {totalPages}
+        </div>
+
+        {/* Next Button */}
+        <Button
+          variant="ghost"
+          size="sm"
+          disabled={currentPage === totalPages}
+          onClick={() => onPageChange(currentPage + 1)}
+        >
+          Next
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Button>
+      </div>
+    </div>
+  )
+}
