@@ -14,16 +14,18 @@ interface HighlightCardProps {
   title: string
   coins: HighlightCoin[]
   loading?: boolean
-  variant?: 'gainers' | 'losers' | 'volume' | 'trending'
+  variant?: 'gainers' | 'losers' | 'volume' | 'trending' | 'volatile'
+  onCoinClick?: (coinId: string) => void
 }
 
-export const HighlightCard = ({ title, coins, loading, variant = 'gainers' }: HighlightCardProps) => {
+export const HighlightCard = ({ title, coins, loading, variant = 'gainers', onCoinClick }: HighlightCardProps) => {
   const getIcon = () => {
     switch (variant) {
       case 'gainers': return '📈'
       case 'losers': return '📉'
       case 'volume': return '💰'
       case 'trending': return '🔥'
+      case 'volatile': return '⚡'
     }
   }
 
@@ -47,6 +49,7 @@ export const HighlightCard = ({ title, coins, loading, variant = 'gainers' }: Hi
             <div 
               key={coin.id} 
               className="flex items-center justify-between p-2 rounded-lg hover:bg-neutral-50 transition-colors"
+              onClick={() => onCoinClick?.(coin.id)}
             >
               <div className="flex items-center gap-3">
                 <CoinIcon src={coin.image} alt={coin.name} size="sm" />

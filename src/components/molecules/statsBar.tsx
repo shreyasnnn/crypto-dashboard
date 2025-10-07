@@ -7,6 +7,7 @@ interface CoinData {
   symbol: string
   image: string
   priceChangePercentage24h: number
+  volume24h?: number
 }
 
 interface StatsBarProps {
@@ -55,9 +56,14 @@ export const StatsBar = ({
         </div>
         <div className="space-y-2">
           {trending.slice(0, 3).map((coin) => (
-            <div key={coin.id} className="flex items-center gap-2">
-              <CoinIcon src={coin.image} alt={coin.name} size="xs" />
-              <span className="text-sm font-medium text-neutral-700">{coin.symbol}</span>
+            <div key={coin.id} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CoinIcon src={coin.image} alt={coin.name} size="xs" />
+                <span className="text-sm font-medium text-neutral-700">{coin.symbol}</span>
+              </div>
+              <span className="text-xs font-bold text-success-600">
+                +{coin.priceChangePercentage24h.toFixed(2)}%
+              </span>
             </div>
           ))}
         </div>
@@ -91,5 +97,6 @@ export const StatsBar = ({
         </div>
       </div>
     </div>
+
   )
 }
