@@ -89,7 +89,7 @@ Deploy to Netlify:
 
 ## Performance
 
-- **95+ Lighthouse Performance Score**
+- **Good Lighthouse Performance Score**
 - React Query caching reduces API calls by 70%
 - Code splitting and lazy loading for optimal bundle size
 - Debounced search and memoization for smooth UX
