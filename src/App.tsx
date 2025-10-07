@@ -13,8 +13,8 @@ import { useCoins, useHighlights } from "@/hooks/useCoins";
 import { useTrending } from "@/hooks/useTrending";
 import { useCoinSearch } from "@/hooks/useCoinSearch";
 import { useGlobalStats } from "@/hooks/useGlobalStats";
+import apiClient from "@/api/apiClient";
 
-// ONLY VALID COINGECKO API SORT OPTIONS
 const SORT_OPTIONS = [
   { value: "market_cap_desc", label: "Market Cap (High to Low)" },
   { value: "market_cap_asc", label: "Market Cap (Low to High)" },
@@ -29,8 +29,8 @@ function App() {
   const [activeTab, setActiveTab] = useState<"all" | "highlights">("all");
   const [selectedCoin, setSelectedCoin] = useState<any>(null);
   const [sortBy, setSortBy] = useState("market_cap_desc");
+  const [isLoadingCoinDetails, setIsLoadingCoinDetails] = useState(false);
 
-  // API Hooks - Pass sortBy for server-side sorting
   const {
     data: coins,
     isLoading: coinsLoading,
@@ -60,20 +60,65 @@ function App() {
     [setSearchQuery]
   );
 
+  // ✅ UPDATED: Fetch full coin data if not found locally
   const handleCoinClickById = useCallback(
-    (coinId: string) => {
+    async (coinId: string) => {
+      // First, try to find in existing data
       const allCoins = [
         ...topGainers,
         ...topLosers,
         ...highestVolume,
+        ...mostVolatile,
         ...(coins || []),
       ];
-      const coin = allCoins.find((c) => c.id === coinId);
+      
+      let coin = allCoins.find((c) => c.id === coinId);
+      
+      // ✅ If not found (trending coin), fetch full details from API
+      if (!coin) {
+        try {
+          setIsLoadingCoinDetails(true);
+          
+          const response = await apiClient.get(`/coins/markets`, {
+            params: {
+              vs_currency: 'usd',
+              ids: coinId,
+              order: 'market_cap_desc',
+              sparkline: true,
+              price_change_percentage: '24h'
+            }
+          });
+
+          if (response.data && response.data.length > 0) {
+            const fullCoinData = response.data[0];
+            
+            // Transform to match our CoinData format
+            coin = {
+              id: fullCoinData.id,
+              rank: fullCoinData.market_cap_rank,
+              name: fullCoinData.name,
+              symbol: fullCoinData.symbol,
+              image: fullCoinData.image,
+              currentPrice: fullCoinData.current_price,
+              priceChange24h: fullCoinData.price_change_24h,
+              priceChangePercentage24h: fullCoinData.price_change_percentage_24h,
+              marketCap: fullCoinData.market_cap,
+              volume24h: fullCoinData.total_volume,
+              sparkline: fullCoinData.sparkline_in_7d?.price || [],
+            };
+          }
+        } catch (error) {
+          console.error('Failed to fetch coin details:', error);
+        } finally {
+          setIsLoadingCoinDetails(false);
+        }
+      }
+      
       if (coin) {
         setSelectedCoin(coin);
       }
     },
-    [topGainers, topLosers, highestVolume, coins]
+    [topGainers, topLosers, highestVolume, mostVolatile, coins]
   );
 
   const handleSortChange = (newSortBy: string) => {
@@ -130,7 +175,6 @@ function App() {
   const totalPages = 100;
   const totalItems = totalPages * COINS_PER_PAGE;
 
-  // Loading state
   if (coinsLoading && !coins) {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
@@ -142,7 +186,6 @@ function App() {
     );
   }
 
-  // Error state
   if (coinsError) {
     return (
       <div className="min-h-screen bg-neutral-50 flex items-center justify-center">
@@ -251,6 +294,7 @@ function App() {
       <CoinDetailModal
         coin={selectedCoin}
         onClose={() => setSelectedCoin(null)}
+        // isLoading={isLoadingCoinDetails}
       />
     </div>
   );
