@@ -1,10 +1,71 @@
+<!-- index.html -->
 <!doctype html>
 <html lang="en">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Crypto Dashboard",
+  "description": "Real-time cryptocurrency market data and analysis dashboard",
+  "url": "https://cryptcoin-dashboard.netlify.app/",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Your Name"
+  }
+}
+</script>
+
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>crypto-dashboard</title>
+    
+    <!-- ✅ SEO: Meta Description -->
+    <meta name="description" content="Track real-time cryptocurrency prices, market trends, and trading volumes. View top gainers, losers, and market highlights for 10,000+ cryptocurrencies powered by CoinGecko API." />
+    
+    <!-- ✅ SEO: Keywords -->
+    <meta name="keywords" content="cryptocurrency, crypto prices, bitcoin, ethereum, market cap, trading volume, crypto dashboard" />
+    
+    <!-- ✅ SEO: Author -->
+    <meta name="author" content="Your Name" />
+    
+    <!-- ✅ SEO: Open Graph Tags (for social media) -->
+    <meta property="og:title" content="Crypto Dashboard - Real-time Cryptocurrency Market Data" />
+    <meta property="og:description" content="Track 10,000+ cryptocurrencies with live prices, charts, and market analysis" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://cryptcoin-dashboard.netlify.app/" />
+    <meta property="og:image" content="https://cryptcoin-dashboard.netlify.app/og-image.png" />
+    
+    <!-- ✅ SEO: Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Crypto Dashboard" />
+    <meta name="twitter:description" content="Real-time cryptocurrency market data and analysis" />
+    <meta name="twitter:image" content="https://cryptcoin-dashboard.netlify.app/og-image.png" />
+
+     <!-- Replace default Vite icon with custom favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- ✅ SEO: Canonical URL -->
+    <link rel="canonical" href="https://cryptcoin-dashboard.netlify.app/" />
+
+    <!-- ✅ Performance: Preconnect to API -->
+  <link rel="preconnect" href="https://api.coingecko.com" />
+  <link rel="dns-prefetch" href="https://api.coingecko.com" />
+  
+  <!-- ✅ Performance: Preload critical assets -->
+  <link rel="preload" as="style" href="/src/index.css" />
+    
+    <title>Crypto Dashboard - Real-time Cryptocurrency Market Data</title>
   </head>
   <body>
     <div id="root"></div>

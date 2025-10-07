@@ -1,12 +1,14 @@
 // src/components/atoms/sparkline.tsx
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+import { lazy, Suspense } from "react";
+import { ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
+
+const LineChart = lazy(() =>
+  import("recharts").then((m) => ({ default: m.LineChart }))
+);
+const Line = lazy(() => import("recharts").then((m) => ({ default: m.Line })));
+const YAxis = lazy(() =>
+  import("recharts").then((m) => ({ default: m.YAxis }))
+);
 
 interface SparklineProps {
   data: number[];
@@ -46,55 +48,64 @@ export const Sparkline = ({
   const padding = (maxValue - minValue) * 0.1;
 
   return (
-    <ResponsiveContainer width={width} height={height}>
-      <LineChart
-        width={width}
-        height={height}
-        data={chartData}
-        margin={{ top: 2, right: 2, bottom: 2, left: 2 }}
-      >
-        {/* Grid lines */}
-        {showGrid && (
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke="#e5e5e5"
-            vertical={true}
-            horizontal={true}
-          />
-        )}
-        <YAxis domain={[minValue - padding, maxValue + padding]} hide />
-
-        {/* Tooltip */}
-        {showTooltip && (
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "white",
-              border: "1px solid #e5e5e5",
-              borderRadius: "8px",
-              padding: "8px",
-              fontSize: "12px",
-            }}
-            formatter={(value: number) => [
-              `$${value.toLocaleString()}`,
-              "Price",
-            ]}
-            labelFormatter={(label) => {
-              const hours = label as number;
-              const days = Math.floor(hours / 24);
-              const remainingHours = hours % 24;
-              return `Day ${days + 1}, ${remainingHours}h ago`;
-            }}
-          />
-        )}
-        <Line
-          type="monotone"
-          dataKey="value"
-          stroke={lineColor}
-          strokeWidth={1.5}
-          dot={false}
-          isAnimationActive={false}
+    <Suspense
+      fallback={
+        <div
+          style={{ width, height }}
+          className="bg-neutral-100 rounded animate-pulse"
         />
-      </LineChart>
-    </ResponsiveContainer>
+      }
+    >
+      <ResponsiveContainer width={width} height={height}>
+        <LineChart
+          width={width}
+          height={height}
+          data={chartData}
+          margin={{ top: 2, right: 2, bottom: 2, left: 2 }}
+        >
+          {/* Grid lines */}
+          {showGrid && (
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="#e5e5e5"
+              vertical={true}
+              horizontal={true}
+            />
+          )}
+          <YAxis domain={[minValue - padding, maxValue + padding]} hide />
+
+          {/* Tooltip */}
+          {showTooltip && (
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "white",
+                border: "1px solid #e5e5e5",
+                borderRadius: "8px",
+                padding: "8px",
+                fontSize: "12px",
+              }}
+              formatter={(value: number) => [
+                `$${value.toLocaleString()}`,
+                "Price",
+              ]}
+              labelFormatter={(label) => {
+                const hours = label as number;
+                const days = Math.floor(hours / 24);
+                const remainingHours = hours % 24;
+                return `Day ${days + 1}, ${remainingHours}h ago`;
+              }}
+            />
+          )}
+          <Line
+            type="monotone"
+            dataKey="value"
+            stroke={lineColor}
+            strokeWidth={1.5}
+            dot={false}
+            isAnimationActive={false}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </Suspense>
   );
 };

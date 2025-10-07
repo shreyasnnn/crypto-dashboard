@@ -24,6 +24,7 @@ export const SkeletonLoader = ({
   const style = {
     width: width || (variant === 'circle' ? '40px' : '100%'),
     height: height || (variant === 'circle' ? '40px' : undefined),
+    minHeight: height || '16px',
   }
 
   return (
