@@ -8,6 +8,7 @@ interface HighlightCoin {
   image: string
   value: number
   isPositive?: boolean
+  isTrending?: boolean 
 }
 
 interface HighlightCardProps {
@@ -48,8 +49,9 @@ export const HighlightCard = ({ title, coins, loading, variant = 'gainers', onCo
           {coins.slice(0, 5).map((coin) => (
             <div 
               key={coin.id} 
-              className="flex items-center justify-between p-2 rounded-lg hover:bg-neutral-50 transition-colors"
+              className="flex items-center justify-between p-2 rounded-lg hover:bg-neutral-50 transition-colors cursor-pointer"
               onClick={() => onCoinClick?.(coin.id)}
+              title={`View ${coin.name} details`}  
             >
               <div className="flex items-center gap-3">
                 <CoinIcon src={coin.image} alt={coin.name} size="sm" />
@@ -58,16 +60,18 @@ export const HighlightCard = ({ title, coins, loading, variant = 'gainers', onCo
                   <div className="text-xs text-neutral-500">{coin.name}</div>
                 </div>
               </div>
-              <span className={`text-sm font-bold ${
-                variant === 'volume' 
-                  ? 'text-primary-600' 
-                  : coin.isPositive ? 'text-success-600' : 'text-danger-600'
-              }`}>
-                {variant === 'volume' 
-                  ? `$${coin.value.toLocaleString()}`
-                  : `${coin.isPositive ? '+' : ''}${coin.value.toFixed(2)}%`
-                }
-              </span>
+              <div className="flex flex-col items-end gap-1">
+                <span className={`text-sm font-bold ${
+                  variant === 'volume' 
+                    ? 'text-primary-600' 
+                    : coin.isPositive ? 'text-success-600' : 'text-danger-600'
+                }`}>
+                  {variant === 'volume' 
+                    ? `$${coin.value.toLocaleString()}`
+                    : `${coin.isPositive ? '+' : ''}${coin.value.toFixed(2)}%`
+                  }
+                </span>
+              </div>
             </div>
           ))}
         </div>
