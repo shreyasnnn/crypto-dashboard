@@ -1,19 +1,24 @@
-import axios from "axios";
+// src/api/apiClient.ts
+import axios from 'axios'
 
-const Base_URL = import.meta.env.VITE_COINGECKO_API_URL;
+const API_KEY = import.meta.env.VITE_COINGECKO_API_KEY
+
 const apiClient = axios.create({
-  baseURL: Base_URL,
+  baseURL: 'https://api.coingecko.com/api/v3',
   timeout: 10000,
-  // Default headers - sent with every request
   headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
   },
-});
+})
 
-// Request interceptor - runs BEFORE every request
+// Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
+    if (API_KEY) {
+      config.headers['x-cg-demo-api-key'] = API_KEY
+    }
+    
     console.log('📤 Making request to:', config.url)
     return config
   },
@@ -22,7 +27,7 @@ apiClient.interceptors.request.use(
   }
 )
 
-// Response interceptor - runs AFTER every response
+// Response interceptor
 apiClient.interceptors.response.use(
   (response) => {
     console.log('✅ Response received from:', response.config.url)
@@ -31,9 +36,8 @@ apiClient.interceptors.response.use(
   (error) => {
     console.error('❌ API Error:', error.message)
     
-    // Handle specific errors
     if (error.response?.status === 429) {
-      return Promise.reject(new Error('Too many requests. Please wait a moment.'))
+      return Promise.reject(new Error('Rate limit exceeded. Please wait a moment.'))
     }
     
     if (error.response?.status >= 500) {
@@ -44,5 +48,4 @@ apiClient.interceptors.response.use(
   }
 )
 
-
-export default apiClient;
+export default apiClient
