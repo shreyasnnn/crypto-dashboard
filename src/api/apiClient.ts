@@ -1,7 +1,8 @@
 import axios from "axios";
 
+const Base_URL = import.meta.env.VITE_COINGECKO_API_URL;
 const apiClient = axios.create({
-  baseURL: "https://api.coingecko.com/api/v3",
+  baseURL: Base_URL,
   timeout: 10000,
   // Default headers - sent with every request
   headers: {
