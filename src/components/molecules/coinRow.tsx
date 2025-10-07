@@ -1,4 +1,4 @@
-// src/components/molecules/CoinRow.tsx
+// src/components/molecules/coinRow.tsx
 import { CoinIcon, Badge } from '@/components/atoms'
 
 interface CoinData {
@@ -20,28 +20,6 @@ interface CoinRowProps {
 
 export const CoinRow = ({ coin, onClick }: CoinRowProps) => {
   const isPositive = coin.priceChangePercentage24h >= 0
-  const changeColor = isPositive ? 'text-success-600' : 'text-danger-600'
-  const changeBg = isPositive ? 'bg-success-50' : 'bg-danger-50'
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: price < 1 ? 4 : 2,
-      maximumFractionDigits: price < 1 ? 6 : 2,
-    }).format(price)
-  }
-
-  const formatMarketCap = (value: number) => {
-    if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`
-    if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`
-    if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`
-    return formatPrice(value)
-  }
-
-  const formatPercentage = (value: number) => {
-    return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`
-  }
 
   return (
     <tr 
@@ -66,26 +44,26 @@ export const CoinRow = ({ coin, onClick }: CoinRowProps) => {
 
       {/* Price */}
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-neutral-900">
-        {formatPrice(coin.currentPrice)}
+        ${coin.currentPrice.toLocaleString()}
       </td>
 
       {/* 24h Change */}
       <td className="px-6 py-4 whitespace-nowrap text-right">
         <Badge variant={isPositive ? 'success' : 'danger'} size="md">
-          <span className={`font-semibold ${changeColor}`}>
-            {formatPercentage(coin.priceChangePercentage24h)}
+          <span className={`font-semibold ${isPositive ? 'text-success-600' : 'text-danger-600'}`}>
+            {isPositive ? '+' : ''}{coin.priceChangePercentage24h.toFixed(2)}%
           </span>
         </Badge>
       </td>
 
       {/* Market Cap */}
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
-        {formatMarketCap(coin.marketCap)}
+        ${coin.marketCap.toLocaleString()}
       </td>
 
       {/* Volume */}
       <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
-        {formatMarketCap(coin.volume24h)}
+        ${coin.volume24h.toLocaleString()}
       </td>
     </tr>
   )

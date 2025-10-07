@@ -1,4 +1,4 @@
-// src/components/molecules/HighlightCard.tsx
+// src/components/molecules/highlightCard.tsx
 import { CoinIcon, LoadingSpinner } from '@/components/atoms'
 
 interface HighlightCoin {
@@ -6,7 +6,7 @@ interface HighlightCoin {
   name: string
   symbol: string
   image: string
-  value: number // percentage, volume, or price
+  value: number
   isPositive?: boolean
 }
 
@@ -25,20 +25,6 @@ export const HighlightCard = ({ title, coins, loading, variant = 'gainers' }: Hi
       case 'volume': return '💰'
       case 'trending': return '🔥'
     }
-  }
-
-  const formatValue = (value: number, isPositive?: boolean) => {
-    if (variant === 'volume') {
-      if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`
-      if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`
-      return `$${value.toFixed(2)}`
-    }
-    return `${isPositive ? '+' : ''}${value.toFixed(2)}%`
-  }
-
-  const getValueColor = (isPositive?: boolean) => {
-    if (variant === 'volume') return 'text-primary-600'
-    return isPositive ? 'text-success-600' : 'text-danger-600'
   }
 
   return (
@@ -69,8 +55,15 @@ export const HighlightCard = ({ title, coins, loading, variant = 'gainers' }: Hi
                   <div className="text-xs text-neutral-500">{coin.name}</div>
                 </div>
               </div>
-              <span className={`text-sm font-bold ${getValueColor(coin.isPositive)}`}>
-                {formatValue(coin.value, coin.isPositive)}
+              <span className={`text-sm font-bold ${
+                variant === 'volume' 
+                  ? 'text-primary-600' 
+                  : coin.isPositive ? 'text-success-600' : 'text-danger-600'
+              }`}>
+                {variant === 'volume' 
+                  ? `$${coin.value.toLocaleString()}`
+                  : `${coin.isPositive ? '+' : ''}${coin.value.toFixed(2)}%`
+                }
               </span>
             </div>
           ))}
