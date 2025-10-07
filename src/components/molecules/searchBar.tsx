@@ -1,4 +1,4 @@
-// src/components/molecules/SearchBar.tsx
+// src/components/molecules/searchBar.tsx
 import { useState, useEffect } from 'react'
 import { Input } from '@/components/atoms'
 
@@ -21,11 +21,10 @@ export const SearchBar = ({
     }, debounceMs)
 
     return () => clearTimeout(timeout)
-  }, [value, debounceMs, onSearch])
+  }, [value, debounceMs]) // ❌ Removed onSearch from dependencies
 
   const handleClear = () => {
     setValue('')
-    onSearch('')
   }
 
   return (

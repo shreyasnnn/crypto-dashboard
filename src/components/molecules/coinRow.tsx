@@ -27,42 +27,42 @@ export const CoinRow = ({ coin, onClick }: CoinRowProps) => {
       className="hover:bg-neutral-50 transition-colors cursor-pointer border-b border-neutral-100"
     >
       {/* Rank */}
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-600">
+      <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-xs md:text-sm font-medium text-neutral-600">
         #{coin.rank}
       </td>
 
       {/* Name & Symbol */}
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center gap-3">
-          <CoinIcon src={coin.image} alt={coin.name} size="md" />
+      <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap">
+        <div className="flex items-center gap-2 md:gap-3">
+          <CoinIcon src={coin.image} alt={coin.name} size="sm" className="md:w-8 md:h-8" />
           <div>
-            <div className="text-sm font-semibold text-neutral-900">{coin.name}</div>
+            <div className="text-xs md:text-sm font-semibold text-neutral-900">{coin.name}</div>
             <div className="text-xs text-neutral-500 uppercase">{coin.symbol}</div>
           </div>
         </div>
       </td>
 
       {/* Price */}
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-neutral-900">
+      <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-right text-xs md:text-sm font-medium text-neutral-900">
         ${coin.currentPrice.toLocaleString()}
       </td>
 
       {/* 24h Change */}
-      <td className="px-6 py-4 whitespace-nowrap text-right">
-        <Badge variant={isPositive ? 'success' : 'danger'} size="md">
-          <span className={`font-semibold ${isPositive ? 'text-success-600' : 'text-danger-600'}`}>
+      <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-right">
+        <Badge variant={isPositive ? 'success' : 'danger'} size="sm">
+          <span className={`font-semibold text-xs ${isPositive ? 'text-success-600' : 'text-danger-600'}`}>
             {isPositive ? '+' : ''}{coin.priceChangePercentage24h.toFixed(2)}%
           </span>
         </Badge>
       </td>
 
-      {/* Market Cap */}
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
+      {/* Market Cap - Hidden on mobile/tablet */}
+      <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
         ${coin.marketCap.toLocaleString()}
       </td>
 
-      {/* Volume */}
-      <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
+      {/* Volume - Hidden on mobile/tablet/medium screens */}
+      <td className="hidden xl:table-cell px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
         ${coin.volume24h.toLocaleString()}
       </td>
     </tr>

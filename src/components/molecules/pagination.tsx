@@ -1,12 +1,12 @@
-// src/components/molecules/Pagination.tsx
+// src/components/molecules/pagination.tsx
 import { Button } from '@/components/atoms'
 
 interface PaginationProps {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
-  itemsPerPage?: number
-  totalItems?: number
+  itemsPerPage: number
+  totalItems: number
 }
 
 export const Pagination = ({ 
@@ -44,15 +44,19 @@ export const Pagination = ({
     return pages
   }
 
+  const startItem = (currentPage - 1) * itemsPerPage + 1
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems)
+
   return (
-    <div className="flex items-center justify-between px-6 py-4 bg-white border-t border-neutral-200">
-      {/* Info */}
-      <div className="text-sm text-neutral-600">
-        {itemsPerPage && totalItems && (
-          <span>
-            Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} results
-          </span>
-        )}
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 md:px-6 py-4 bg-white border-t border-neutral-200">
+      {/* Info - Hidden on mobile */}
+      <div className="hidden sm:block text-sm text-neutral-600">
+        Showing <span className="font-medium">{startItem}</span> to <span className="font-medium">{endItem}</span> of <span className="font-medium">{totalItems}</span> results
+      </div>
+
+      {/* Mobile Info */}
+      <div className="sm:hidden text-sm text-neutral-600">
+        Page {currentPage} of {totalPages}
       </div>
 
       {/* Pagination Controls */}
@@ -63,14 +67,15 @@ export const Pagination = ({
           size="sm"
           disabled={currentPage === 1}
           onClick={() => onPageChange(currentPage - 1)}
+          className="flex items-center gap-1"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Previous
+          <span className="hidden sm:inline">Previous</span>
         </Button>
 
-        {/* Page Numbers */}
+        {/* Page Numbers - Desktop only */}
         <div className="hidden md:flex items-center gap-1">
           {getPageNumbers().map((page, index) => (
             page === '...' ? (
@@ -88,19 +93,15 @@ export const Pagination = ({
           ))}
         </div>
 
-        {/* Mobile Page Indicator */}
-        <div className="md:hidden text-sm text-neutral-600">
-          Page {currentPage} of {totalPages}
-        </div>
-
         {/* Next Button */}
         <Button
           variant="ghost"
           size="sm"
           disabled={currentPage === totalPages}
           onClick={() => onPageChange(currentPage + 1)}
+          className="flex items-center gap-1"
         >
-          Next
+          <span className="hidden sm:inline">Next</span>
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>

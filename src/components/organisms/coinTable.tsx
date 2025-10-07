@@ -1,7 +1,7 @@
 // src/components/organisms/coinTable.tsx
 import { CoinRow } from '@/components/molecules/coinRow'
 import { Pagination } from '@/components/molecules/pagination'
-import { LoadingSpinner, SkeletonLoader } from '@/components/atoms'
+import { SkeletonLoader } from '@/components/atoms'
 
 interface CoinData {
   id: string
@@ -20,6 +20,8 @@ interface CoinTableProps {
   loading?: boolean
   currentPage: number
   totalPages: number
+  totalItems: number
+  perPage: number
   onPageChange: (page: number) => void
   onCoinClick?: (coin: CoinData) => void
 }
@@ -28,7 +30,9 @@ export const CoinTable = ({
   data, 
   loading, 
   currentPage, 
-  totalPages, 
+  totalPages,
+  totalItems,
+  perPage,
   onPageChange,
   onCoinClick 
 }: CoinTableProps) => {
@@ -42,22 +46,22 @@ export const CoinTable = ({
         <table className="w-full">
           <thead className="bg-neutral-50 border-b border-neutral-200">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 #
               </th>
-              <th className="px-6 py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="px-4 md:px-6 py-3 md:py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Price
               </th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
-                24h Change
+              <th className="px-4 md:px-6 py-3 md:py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+                24h
               </th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="hidden lg:table-cell px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Market Cap
               </th>
-              <th className="px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="hidden xl:table-cell px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Volume 24h
               </th>
             </tr>
@@ -67,8 +71,8 @@ export const CoinTable = ({
               // Loading Skeleton
               Array(10).fill(0).map((_, i) => (
                 <tr key={i} className="border-b border-neutral-100">
-                  <td className="px-6 py-4"><SkeletonLoader width="30px" /></td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4"><SkeletonLoader width="30px" /></td>
+                  <td className="px-4 md:px-6 py-4">
                     <div className="flex items-center gap-3">
                       <SkeletonLoader variant="circle" width="32px" height="32px" />
                       <div className="space-y-2">
@@ -77,10 +81,10 @@ export const CoinTable = ({
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4"><SkeletonLoader width="80px" /></td>
-                  <td className="px-6 py-4"><SkeletonLoader width="60px" /></td>
-                  <td className="px-6 py-4"><SkeletonLoader width="100px" /></td>
-                  <td className="px-6 py-4"><SkeletonLoader width="100px" /></td>
+                  <td className="px-4 md:px-6 py-4"><SkeletonLoader width="80px" /></td>
+                  <td className="px-4 md:px-6 py-4"><SkeletonLoader width="60px" /></td>
+                  <td className="hidden lg:table-cell px-6 py-4"><SkeletonLoader width="100px" /></td>
+                  <td className="hidden xl:table-cell px-6 py-4"><SkeletonLoader width="100px" /></td>
                 </tr>
               ))
             ) : sortedData.length > 0 ? (
@@ -106,16 +110,15 @@ export const CoinTable = ({
       </div>
 
       {/* Pagination */}
-      {!loading && data.length > 0 && (
+      {!loading && sortedData.length > 0 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={onPageChange}
-          itemsPerPage={50}
-          totalItems={totalPages * 50}
+          itemsPerPage={perPage}
+          totalItems={totalItems}
         />
       )}
     </div>
   )
 }
-
