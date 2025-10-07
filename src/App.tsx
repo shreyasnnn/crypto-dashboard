@@ -29,7 +29,7 @@ function App() {
   const [activeTab, setActiveTab] = useState<"all" | "highlights">("all");
   const [selectedCoin, setSelectedCoin] = useState<any>(null);
   const [sortBy, setSortBy] = useState("market_cap_desc");
-  const [isLoadingCoinDetails, setIsLoadingCoinDetails] = useState(false);
+  const [_isLoadingCoinDetails, setIsLoadingCoinDetails] = useState(false);
 
   const {
     data: coins,
