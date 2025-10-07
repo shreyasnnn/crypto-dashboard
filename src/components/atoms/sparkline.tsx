@@ -56,9 +56,9 @@ export const Sparkline = ({
         />
       }
     >
-      <ResponsiveContainer width={width} height={height}>
+      <ResponsiveContainer width={width === 0 ? '100%' : width} height={height}>
         <LineChart
-          width={width}
+          width={width === 0 ? 0 : width}
           height={height}
           data={chartData}
           margin={{ top: 2, right: 2, bottom: 2, left: 2 }}
