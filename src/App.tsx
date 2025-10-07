@@ -29,7 +29,7 @@ function App() {
   const { topGainers, topLosers, highestVolume, mostVolatile, isLoading: highlightsLoading } = useHighlights()
   const { data: trendingRaw } = useTrending()
   const { data: globalStats } = useGlobalStats()
-  const { searchQuery, setSearchQuery, results: searchResults, isSearching, hasSearchQuery } = useCoinSearch()
+  const {  setSearchQuery, results: searchResults, isSearching, hasSearchQuery } = useCoinSearch()
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query)
