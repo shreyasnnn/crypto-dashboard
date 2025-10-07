@@ -6,6 +6,33 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# ✅ Enable compression
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ✅ Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# ✅ Enable Gzip/Brotli compression
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Content-Encoding = "gzip"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Content-Encoding = "gzip"
+
+# ✅ SPA redirect
 [[redirects]]
   from = "/*"
   to = "/index.html"

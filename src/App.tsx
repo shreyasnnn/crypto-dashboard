@@ -8,7 +8,7 @@ import { useTrending } from '@/hooks/useTrending'
 import { useCoinSearch } from '@/hooks/useCoinSearch'
 import { useGlobalStats } from '@/hooks/useGlobalStats'
 
-// ✅ ONLY VALID COINGECKO API SORT OPTIONS
+// ONLY VALID COINGECKO API SORT OPTIONS
 const SORT_OPTIONS = [
   { value: 'market_cap_desc', label: 'Market Cap (High to Low)' },
   { value: 'market_cap_asc', label: 'Market Cap (Low to High)' },
