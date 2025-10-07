@@ -32,9 +32,3 @@
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-# ✅ SPA redirect (IMPORTANT for React Router if you add it later)
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200

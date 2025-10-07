@@ -42,29 +42,29 @@ export const CoinTable = ({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-full table-auto text-sm md:text-base">
           <thead className="bg-neutral-50 border-b border-neutral-200">
             <tr>
-              <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="px-2 md:px-4 py-2 md:py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 #
               </th>
-              <th className="px-4 md:px-6 py-3 md:py-4 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="px-2 md:px-4 py-2 md:py-3 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-4 md:px-6 py-3 md:py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="px-2 md:px-4 py-2 md:py-3 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Price
               </th>
-              <th className="px-4 md:px-6 py-3 md:py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="px-2 md:px-4 py-2 md:py-3 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 24h
               </th>
-              <th className="hidden lg:table-cell px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="hidden lg:table-cell px-4 py-2 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Market Cap
               </th>
-              <th className="hidden xl:table-cell px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="hidden xl:table-cell px-4 py-2 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Volume 24h
               </th>
-              <th className="hidden md:table-cell px-4 md:px-6 py-3 md:py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+              <th className="hidden md:table-cell px-2 md:px-4 py-2 md:py-3 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Last 7 Days
               </th>
             </tr>
@@ -110,7 +110,6 @@ export const CoinTable = ({
                   </tr>
                 ))
             ) : displayData.length > 0 ? (
-  
               displayData.map((coin) => (
                 <CoinRow key={coin.id} coin={coin} onClick={onCoinClick} />
               ))
