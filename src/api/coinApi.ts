@@ -14,7 +14,7 @@ export const fetchCoins = async (page: number = 1, perPage: number = 20): Promis
       order: 'market_cap_desc',
       per_page: perPage,
       page: page,
-      sparkline: false,
+      sparkline: true,
       price_change_percentage: '24h'
     }
   })
@@ -34,7 +34,7 @@ export const fetchTrendingCoins = async () => {
     symbol: item.item.symbol,
     image: item.item.large,
     rank: item.item.market_cap_rank,
-    priceChangePercentage24h: 0, // Trending API doesn't provide this
+    priceChangePercentage24h: item.item.data?.price_change_percentage_24h?.usd || 0, // Trending API doesn't provide this
   }))
   
   return trendingCoins

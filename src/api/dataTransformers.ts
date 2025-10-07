@@ -17,6 +17,9 @@ interface CoinGeckoResponse {
   price_change_24h: number
   price_change_percentage_24h: number
   last_updated: string
+  sparkline_in_7d?: { 
+    price: number[] //The API gives us 168 price points (7 days × 24 hours):
+  }
 }
 
 // What my components expect
@@ -31,6 +34,7 @@ export interface CoinData {
   priceChangePercentage24h: number
   marketCap: number
   volume24h: number
+  sparkline?: number[]
 }
 
 /**
@@ -48,6 +52,7 @@ export const transformCoin = (apiCoin: CoinGeckoResponse): CoinData => {
     priceChangePercentage24h: apiCoin.price_change_percentage_24h,
     marketCap: apiCoin.market_cap,
     volume24h: apiCoin.total_volume,
+    sparkline: apiCoin.sparkline_in_7d?.price || [],
   }
 }
 

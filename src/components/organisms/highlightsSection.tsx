@@ -17,6 +17,7 @@ interface HighlightsSectionProps {
   highestVolume: HighlightCoin[]
   trending: HighlightCoin[]     
   loading?: boolean
+  onCoinClick?: (coinId: string) => void
 }
 
 export const HighlightsSection = ({ 
@@ -24,7 +25,8 @@ export const HighlightsSection = ({
   topLosers,
   highestVolume,
   trending,
-  loading 
+  loading,
+  onCoinClick
 }: HighlightsSectionProps) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -33,24 +35,28 @@ export const HighlightsSection = ({
         coins={topGainers}
         loading={loading}
         variant="gainers"
+        onCoinClick={onCoinClick}
       />
       <HighlightCard
         title="Top Losers"
         coins={topLosers}
         loading={loading}
         variant="losers"
+        onCoinClick={onCoinClick}
       />
       <HighlightCard
         title="Highest Volume"
         coins={highestVolume}
         loading={loading}
         variant="volume"
+        onCoinClick={onCoinClick}
       />
       <HighlightCard
         title="Trending"
         coins={trending}
         loading={loading}
         variant="trending"
+        onCoinClick={onCoinClick}
       />
     </div>
   )

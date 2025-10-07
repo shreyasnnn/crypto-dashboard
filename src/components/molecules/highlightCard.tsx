@@ -15,9 +15,10 @@ interface HighlightCardProps {
   coins: HighlightCoin[]
   loading?: boolean
   variant?: 'gainers' | 'losers' | 'volume' | 'trending'
+  onCoinClick?: (coinId: string) => void
 }
 
-export const HighlightCard = ({ title, coins, loading, variant = 'gainers' }: HighlightCardProps) => {
+export const HighlightCard = ({ title, coins, loading, variant = 'gainers', onCoinClick }: HighlightCardProps) => {
   const getIcon = () => {
     switch (variant) {
       case 'gainers': return '📈'
@@ -47,6 +48,7 @@ export const HighlightCard = ({ title, coins, loading, variant = 'gainers' }: Hi
             <div 
               key={coin.id} 
               className="flex items-center justify-between p-2 rounded-lg hover:bg-neutral-50 transition-colors"
+              onClick={() => onCoinClick?.(coin.id)}
             >
               <div className="flex items-center gap-3">
                 <CoinIcon src={coin.image} alt={coin.name} size="sm" />

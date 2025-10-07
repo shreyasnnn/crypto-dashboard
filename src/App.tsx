@@ -11,18 +11,34 @@ import { useGlobalStats } from '@/hooks/useGlobalStats'
 function App() {
   const COINS_PER_PAGE = 20
   
+  // ALL useState hooks
   const [currentPage, setCurrentPage] = useState(1)
   const [activeTab, setActiveTab] = useState<'all' | 'highlights'>('all')
   const [selectedCoin, setSelectedCoin] = useState<any>(null)
 
-  // API Hooks
+  // ALL API hooks
   const { data: coins, isLoading: coinsLoading, error: coinsError } = useCoins(currentPage, COINS_PER_PAGE)
   const { topGainers, topLosers, highestVolume, isLoading: highlightsLoading } = useHighlights()
   const { data: trendingRaw } = useTrending()
   const { data: globalStats } = useGlobalStats()
   const { searchQuery, setSearchQuery, results: searchResults, isSearching, hasSearchQuery } = useCoinSearch()
 
-  // Transform trending data to match HighlightCoin interface
+  // ALL useCallback hooks
+  const handleSearch = useCallback((query: string) => {
+    setSearchQuery(query)
+    setCurrentPage(1)
+  }, [setSearchQuery])
+
+  const handleCoinClickById = useCallback((coinId: string) => {
+    // Find coin data from highlights or coins list
+    const allCoins = [...topGainers, ...topLosers, ...highestVolume, ...(coins || [])]
+    const coin = allCoins.find(c => c.id === coinId)
+    if (coin) {
+      setSelectedCoin(coin)
+    }
+  }, [topGainers, topLosers, highestVolume, coins])
+
+  // data transformations
   const trending = (trendingRaw || []).map((coin: any) => ({
     id: coin.id,
     name: coin.name,
@@ -32,7 +48,6 @@ function App() {
     isPositive: (coin.priceChangePercentage24h || 0) >= 0,
   }))
 
-  // Transform highlights to match HighlightCoin interface
   const transformedGainers = topGainers.map(coin => ({
     id: coin.id,
     name: coin.name,
@@ -59,17 +74,11 @@ function App() {
     value: coin.volume24h,
   }))
 
-  // Display search results or regular coins
   const displayData = hasSearchQuery ? searchResults : (coins || [])
-  
   const totalPages = 100
   const totalItems = totalPages * COINS_PER_PAGE
 
-  const handleSearch = useCallback((query: string) => {
-    setSearchQuery(query)
-    setCurrentPage(1)
-  }, [setSearchQuery])
-
+  
   // Loading state
   if (coinsLoading && !coins) {
     return (
@@ -117,16 +126,16 @@ function App() {
           </p>
         </header>
 
-        {/* Stats Bar - ✅ Now passes topLosers too */}
-        {activeTab === 'all' &&
-        <StatsBar
-          totalMarketCap={globalStats?.totalMarketCap || 0}
-          totalVolume={globalStats?.totalVolume || 0}
-          trending={trendingRaw || []}
-          topGainers={topGainers}
-          topLosers={topLosers}  // ✅ Added this
-          onMoreClick={() => setActiveTab('highlights')}
-        />}
+        {/* Stats Bar - Only show on 'all' tab */}
+        {activeTab === 'all' && (
+          <StatsBar
+            totalMarketCap={globalStats?.totalMarketCap || 0}
+            totalVolume={globalStats?.totalVolume || 0}
+            trending={trendingRaw || []}
+            topGainers={topGainers}
+            onMoreClick={() => setActiveTab('highlights')}
+          />
+        )}
 
         {/* Navigation & Search */}
         <div className="mb-4 md:mb-6">
@@ -154,13 +163,13 @@ function App() {
           />
         ) : (
           <div className="bg-white rounded-xl border border-neutral-200 p-4 md:p-6">
-            {/* ✅ Now passes pre-calculated data */}
             <HighlightsSection 
               topGainers={transformedGainers}
               topLosers={transformedLosers}
               highestVolume={transformedVolume}
               trending={trending}
               loading={highlightsLoading}
+              onCoinClick={handleCoinClickById}
             />
           </div>
         )}

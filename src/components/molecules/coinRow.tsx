@@ -1,5 +1,5 @@
 // src/components/molecules/coinRow.tsx
-import { CoinIcon, Badge } from '@/components/atoms'
+import { CoinIcon, Badge, Sparkline } from '@/components/atoms'
 
 interface CoinData {
   id: string
@@ -11,6 +11,7 @@ interface CoinData {
   priceChangePercentage24h: number
   marketCap: number
   volume24h: number
+  sparkline?: number[]
 }
 
 interface CoinRowProps {
@@ -64,6 +65,16 @@ export const CoinRow = ({ coin, onClick }: CoinRowProps) => {
       {/* Volume - Hidden on mobile/tablet/medium screens */}
       <td className="hidden xl:table-cell px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
         ${coin.volume24h.toLocaleString()}
+      </td>
+
+      {/* 7-Day Sparkline - Hidden on small screens */}
+      <td className="hidden md:table-cell px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-right">
+        <Sparkline 
+          data={coin.sparkline || []} 
+          isPositive={isPositive}
+          width={120}
+          height={50}
+        />
       </td>
     </tr>
   )

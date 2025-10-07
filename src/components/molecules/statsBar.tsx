@@ -15,7 +15,6 @@ interface StatsBarProps {
   totalVolume: number
   trending: CoinData[]
   topGainers: CoinData[]
-  topLosers: CoinData[]
   onMoreClick: () => void
 }
 
@@ -24,7 +23,6 @@ export const StatsBar = ({
   totalVolume, 
   trending, 
   topGainers,
-  topLosers,
   onMoreClick 
 }: StatsBarProps) => {
   return (
@@ -58,9 +56,14 @@ export const StatsBar = ({
         </div>
         <div className="space-y-2">
           {trending.slice(0, 3).map((coin) => (
-            <div key={coin.id} className="flex items-center gap-2">
-              <CoinIcon src={coin.image} alt={coin.name} size="xs" />
-              <span className="text-sm font-medium text-neutral-700">{coin.symbol}</span>
+            <div key={coin.id} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CoinIcon src={coin.image} alt={coin.name} size="xs" />
+                <span className="text-sm font-medium text-neutral-700">{coin.symbol}</span>
+              </div>
+              <span className="text-xs font-bold text-success-600">
+                +{coin.priceChangePercentage24h.toFixed(2)}%
+              </span>
             </div>
           ))}
         </div>
@@ -88,33 +91,6 @@ export const StatsBar = ({
               </div>
               <span className="text-xs font-bold text-success-600">
                 +{coin.priceChangePercentage24h.toFixed(2)}%
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-     {/* Top Losers */}
-      <div className="bg-white rounded-xl p-4 border border-neutral-200 hover:shadow-md transition-shadow">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">📉</span>
-            <span className="text-xs font-medium text-neutral-500 uppercase tracking-wide">
-              Top Losers
-            </span>
-          </div>
-          <Button variant="ghost" size="sm" onClick={onMoreClick}>
-            More →
-          </Button>
-        </div>
-        <div className="space-y-2">
-          {topLosers.slice(0, 3).map((coin) => (
-            <div key={coin.id} className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CoinIcon src={coin.image} alt={coin.name} size="xs" />
-                <span className="text-sm font-medium text-neutral-700">{coin.symbol}</span>
-              </div>
-              <span className="text-xs font-bold text-danger-600">
-                {coin.priceChangePercentage24h?.toFixed(2)}%
               </span>
             </div>
           ))}

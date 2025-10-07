@@ -1,43 +1,43 @@
 // src/components/organisms/coinTable.tsx
-import { CoinRow } from '@/components/molecules/coinRow'
-import { Pagination } from '@/components/molecules/pagination'
-import { SkeletonLoader } from '@/components/atoms'
+import { CoinRow } from "@/components/molecules/coinRow";
+import { Pagination } from "@/components/molecules/pagination";
+import { SkeletonLoader } from "@/components/atoms";
 
 interface CoinData {
-  id: string
-  rank: number
-  name: string
-  symbol: string
-  image: string
-  currentPrice: number
-  priceChangePercentage24h: number
-  marketCap: number
-  volume24h: number
+  id: string;
+  rank: number;
+  name: string;
+  symbol: string;
+  image: string;
+  currentPrice: number;
+  priceChangePercentage24h: number;
+  marketCap: number;
+  volume24h: number;
 }
 
 interface CoinTableProps {
-  data: CoinData[]
-  loading?: boolean
-  currentPage: number
-  totalPages: number
-  totalItems: number
-  perPage: number
-  onPageChange: (page: number) => void
-  onCoinClick?: (coin: CoinData) => void
+  data: CoinData[];
+  loading?: boolean;
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  perPage: number;
+  onPageChange: (page: number) => void;
+  onCoinClick?: (coin: CoinData) => void;
 }
 
-export const CoinTable = ({ 
-  data, 
-  loading, 
-  currentPage, 
+export const CoinTable = ({
+  data,
+  loading,
+  currentPage,
   totalPages,
   totalItems,
   perPage,
   onPageChange,
-  onCoinClick 
+  onCoinClick,
 }: CoinTableProps) => {
   // Always sort by rank (ascending)
-  const sortedData = [...data].sort((a, b) => a.rank - b.rank)
+  const sortedData = [...data].sort((a, b) => a.rank - b.rank);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
@@ -64,29 +64,51 @@ export const CoinTable = ({
               <th className="hidden xl:table-cell px-6 py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
                 Volume 24h
               </th>
+              <th className="hidden md:table-cell px-4 md:px-6 py-3 md:py-4 text-right text-xs font-semibold text-neutral-600 uppercase tracking-wider">
+                Last 7 Days
+              </th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               // Loading Skeleton
-              Array(10).fill(0).map((_, i) => (
-                <tr key={i} className="border-b border-neutral-100">
-                  <td className="px-4 md:px-6 py-4"><SkeletonLoader width="30px" /></td>
-                  <td className="px-4 md:px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <SkeletonLoader variant="circle" width="32px" height="32px" />
-                      <div className="space-y-2">
-                        <SkeletonLoader width="100px" />
-                        <SkeletonLoader width="50px" />
+              Array(10)
+                .fill(0)
+                .map((_, i) => (
+                  <tr key={i} className="border-b border-neutral-100">
+                    <td className="px-4 md:px-6 py-4">
+                      <SkeletonLoader width="30px" />
+                    </td>
+                    <td className="px-4 md:px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <SkeletonLoader
+                          variant="circle"
+                          width="32px"
+                          height="32px"
+                        />
+                        <div className="space-y-2">
+                          <SkeletonLoader width="100px" />
+                          <SkeletonLoader width="50px" />
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-4 md:px-6 py-4"><SkeletonLoader width="80px" /></td>
-                  <td className="px-4 md:px-6 py-4"><SkeletonLoader width="60px" /></td>
-                  <td className="hidden lg:table-cell px-6 py-4"><SkeletonLoader width="100px" /></td>
-                  <td className="hidden xl:table-cell px-6 py-4"><SkeletonLoader width="100px" /></td>
-                </tr>
-              ))
+                    </td>
+                    <td className="px-4 md:px-6 py-4">
+                      <SkeletonLoader width="80px" />
+                    </td>
+                    <td className="px-4 md:px-6 py-4">
+                      <SkeletonLoader width="60px" />
+                    </td>
+                    <td className="hidden lg:table-cell px-6 py-4">
+                      <SkeletonLoader width="100px" />
+                    </td>
+                    <td className="hidden xl:table-cell px-6 py-4">
+                      <SkeletonLoader width="100px" />
+                    </td>
+                    <td className="hidden md:table-cell px-4 md:px-6 py-4">
+                      <SkeletonLoader width="80px" height="40px" />
+                    </td>
+                  </tr>
+                ))
             ) : sortedData.length > 0 ? (
               sortedData.map((coin) => (
                 <CoinRow key={coin.id} coin={coin} onClick={onCoinClick} />
@@ -94,13 +116,27 @@ export const CoinTable = ({
             ) : (
               // Empty State
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center">
+                <td colSpan={7} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center justify-center text-neutral-500">
-                    <svg className="w-16 h-16 mb-4 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg
+                      className="w-16 h-16 mb-4 text-neutral-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
                     </svg>
-                    <p className="text-lg font-semibold mb-2">No cryptocurrencies found</p>
-                    <p className="text-sm">Try adjusting your search or filters</p>
+                    <p className="text-lg font-semibold mb-2">
+                      No cryptocurrencies found
+                    </p>
+                    <p className="text-sm">
+                      Try adjusting your search or filters
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -120,5 +156,5 @@ export const CoinTable = ({
         />
       )}
     </div>
-  )
-}
+  );
+};

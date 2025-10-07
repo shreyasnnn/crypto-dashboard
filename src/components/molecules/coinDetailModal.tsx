@@ -1,5 +1,5 @@
 // src/components/molecules/coinDetailModal.tsx
-import { CoinIcon, Button, Badge } from '@/components/atoms'
+import { CoinIcon, Button, Badge, Sparkline } from '@/components/atoms'
 
 interface CoinData {
   id: string
@@ -12,6 +12,7 @@ interface CoinData {
   priceChangePercentage24h: number
   marketCap: number
   volume24h: number
+  sparkline?: number[]
 }
 
 interface CoinDetailModalProps {
@@ -75,6 +76,26 @@ export const CoinDetailModal = ({ coin, onClose }: CoinDetailModalProps) => {
             </div>
           </div>
 
+
+          {/* 7-Day Price Chart */}
+          {coin.sparkline && coin.sparkline.length > 0 && (
+            <div className="p-6 border-t border-neutral-200">
+              <div className="text-sm font-semibold text-neutral-700 mb-3">
+                Last 7 Days Price Chart
+              </div>
+              <div className="bg-neutral-50 rounded-lg p-4 flex items-center justify-center">
+                <Sparkline 
+                  data={coin.sparkline} 
+                  isPositive={isPositive}
+                  width={500} 
+                  height={150}
+                  showGrid={true}
+                  showTooltip={true}
+                />
+              </div>
+            </div>
+          )}
+
           {/* Stats Grid */}
           <div className="p-6 grid grid-cols-2 gap-6">
             <div>
@@ -100,14 +121,6 @@ export const CoinDetailModal = ({ coin, onClose }: CoinDetailModalProps) => {
               <div className="text-xl font-bold text-neutral-900">
                 {coin.symbol}
               </div>
-            </div>
-          </div>
-
-          {/* Chart Placeholder */}
-          <div className="p-6 border-t border-neutral-200">
-            <div className="text-sm font-medium text-neutral-600 mb-3">Price Chart (Coming Soon)</div>
-            <div className="h-48 bg-neutral-50 rounded-lg flex items-center justify-center border-2 border-dashed border-neutral-300">
-              <span className="text-neutral-400">📈 Chart will be displayed here</span>
             </div>
           </div>
 
