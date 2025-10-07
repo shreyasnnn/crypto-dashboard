@@ -10,12 +10,12 @@ interface CoinGeckoResponse {
   symbol: string
   name: string
   image: string
-  current_price: number
-  market_cap: number
-  market_cap_rank: number
-  total_volume: number
-  price_change_24h: number
-  price_change_percentage_24h: number
+  current_price: number | null
+  market_cap: number| null
+  market_cap_rank: number| null
+  total_volume: number| null
+  price_change_24h: number| null
+  price_change_percentage_24h: number| null
   last_updated: string
   sparkline_in_7d?: { 
     price: number[] //The API gives us 168 price points (7 days × 24 hours):
@@ -43,15 +43,15 @@ export interface CoinData {
 export const transformCoin = (apiCoin: CoinGeckoResponse): CoinData => {
   return {
     id: apiCoin.id,
-    rank: apiCoin.market_cap_rank,
+    rank: apiCoin.market_cap_rank ?? 0,
     name: apiCoin.name,
     symbol: apiCoin.symbol,
     image: apiCoin.image,
-    currentPrice: apiCoin.current_price,
-    priceChange24h: apiCoin.price_change_24h,
-    priceChangePercentage24h: apiCoin.price_change_percentage_24h,
-    marketCap: apiCoin.market_cap,
-    volume24h: apiCoin.total_volume,
+    currentPrice: apiCoin.current_price ?? 0,
+    priceChange24h: apiCoin.price_change_24h ?? 0,
+    priceChangePercentage24h: apiCoin.price_change_percentage_24h ?? 0,
+    marketCap: apiCoin.market_cap ?? 0,
+    volume24h: apiCoin.total_volume ?? 0,
     sparkline: apiCoin.sparkline_in_7d?.price || [],
   }
 }
@@ -83,5 +83,11 @@ export const getTopLosers = (coins: CoinData[], limit = 5): CoinData[] => {
 export const getHighestVolume = (coins: CoinData[], limit = 5): CoinData[] => {
   return [...coins]
     .sort((a, b) => b.volume24h - a.volume24h)
+    .slice(0, limit)
+}
+
+export const getMostVolatile = (coins: CoinData[], limit = 5): CoinData[] => {
+  return [...coins]
+    .sort((a, b) => Math.abs(b.priceChangePercentage24h) - Math.abs(a.priceChangePercentage24h))
     .slice(0, limit)
 }

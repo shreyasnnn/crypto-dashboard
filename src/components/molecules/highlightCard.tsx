@@ -14,7 +14,7 @@ interface HighlightCardProps {
   title: string
   coins: HighlightCoin[]
   loading?: boolean
-  variant?: 'gainers' | 'losers' | 'volume' | 'trending'
+  variant?: 'gainers' | 'losers' | 'volume' | 'trending' | 'volatile'
   onCoinClick?: (coinId: string) => void
 }
 
@@ -25,6 +25,7 @@ export const HighlightCard = ({ title, coins, loading, variant = 'gainers', onCo
       case 'losers': return '📉'
       case 'volume': return '💰'
       case 'trending': return '🔥'
+      case 'volatile': return '⚡'
     }
   }
 

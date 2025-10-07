@@ -10,9 +10,10 @@ interface CoinData {
   symbol: string;
   image: string;
   currentPrice: number;
-  priceChangePercentage24h: number;
+  priceChangePercentage24h: number | null;
   marketCap: number;
   volume24h: number;
+  sparkline?: number[];
 }
 
 interface CoinTableProps {
@@ -36,8 +37,7 @@ export const CoinTable = ({
   onPageChange,
   onCoinClick,
 }: CoinTableProps) => {
-  // Always sort by rank (ascending)
-  const sortedData = [...data].sort((a, b) => a.rank - b.rank);
+  const displayData = data;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
@@ -109,8 +109,9 @@ export const CoinTable = ({
                     </td>
                   </tr>
                 ))
-            ) : sortedData.length > 0 ? (
-              sortedData.map((coin) => (
+            ) : displayData.length > 0 ? (
+  
+              displayData.map((coin) => (
                 <CoinRow key={coin.id} coin={coin} onClick={onCoinClick} />
               ))
             ) : (
@@ -146,7 +147,8 @@ export const CoinTable = ({
       </div>
 
       {/* Pagination */}
-      {!loading && sortedData.length > 0 && (
+      {/* ✅ FIXED: Use displayData.length instead of sortedData.length */}
+      {!loading && displayData.length > 0 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}

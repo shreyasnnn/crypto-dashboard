@@ -7,11 +7,11 @@ import { transformCoins, type CoinData } from './dataTransformers'
  * param perPage - How many coins per page (default: 20)
  * returns Array of coin data
  */
-export const fetchCoins = async (page: number = 1, perPage: number = 20): Promise<CoinData[]> => {
+export const fetchCoins = async (page: number = 1, perPage: number = 20, sortBy: string = 'market_cap_desc'): Promise<CoinData[]> => {
   const response = await apiClient.get('/coins/markets', {
     params: {
       vs_currency: 'usd',
-      order: 'market_cap_desc',
+      order: sortBy,
       per_page: perPage,
       page: page,
       sparkline: true,

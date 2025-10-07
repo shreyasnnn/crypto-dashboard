@@ -2,35 +2,41 @@
 import { useState, useCallback } from 'react'
 import { CoinTable } from '@/components/organisms/coinTable'
 import { HighlightsSection } from '@/components/organisms/highlightsSection'
-import { SearchBar, NavBar, StatsBar, CoinDetailModal } from '@/components/molecules'
+import { SearchBar, NavBar, StatsBar, CoinDetailModal, SortDropdown } from '@/components/molecules'
 import { useCoins, useHighlights } from '@/hooks/useCoins'
 import { useTrending } from '@/hooks/useTrending'
 import { useCoinSearch } from '@/hooks/useCoinSearch'
 import { useGlobalStats } from '@/hooks/useGlobalStats'
 
+// ✅ ONLY VALID COINGECKO API SORT OPTIONS
+const SORT_OPTIONS = [
+  { value: 'market_cap_desc', label: 'Market Cap (High to Low)' },
+  { value: 'market_cap_asc', label: 'Market Cap (Low to High)' },
+  { value: 'volume_desc', label: 'Volume (High to Low)' },
+  { value: 'volume_asc', label: 'Volume (Low to High)' },
+]
+
 function App() {
   const COINS_PER_PAGE = 20
   
-  // ALL useState hooks
   const [currentPage, setCurrentPage] = useState(1)
   const [activeTab, setActiveTab] = useState<'all' | 'highlights'>('all')
   const [selectedCoin, setSelectedCoin] = useState<any>(null)
+  const [sortBy, setSortBy] = useState('market_cap_desc')
 
-  // ALL API hooks
-  const { data: coins, isLoading: coinsLoading, error: coinsError } = useCoins(currentPage, COINS_PER_PAGE)
-  const { topGainers, topLosers, highestVolume, isLoading: highlightsLoading } = useHighlights()
+  // API Hooks - Pass sortBy for server-side sorting
+  const { data: coins, isLoading: coinsLoading, error: coinsError } = useCoins(currentPage, COINS_PER_PAGE, sortBy)
+  const { topGainers, topLosers, highestVolume, mostVolatile, isLoading: highlightsLoading } = useHighlights()
   const { data: trendingRaw } = useTrending()
   const { data: globalStats } = useGlobalStats()
   const { searchQuery, setSearchQuery, results: searchResults, isSearching, hasSearchQuery } = useCoinSearch()
 
-  // ALL useCallback hooks
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query)
     setCurrentPage(1)
   }, [setSearchQuery])
 
   const handleCoinClickById = useCallback((coinId: string) => {
-    // Find coin data from highlights or coins list
     const allCoins = [...topGainers, ...topLosers, ...highestVolume, ...(coins || [])]
     const coin = allCoins.find(c => c.id === coinId)
     if (coin) {
@@ -38,7 +44,12 @@ function App() {
     }
   }, [topGainers, topLosers, highestVolume, coins])
 
-  // data transformations
+  const handleSortChange = (newSortBy: string) => {
+    setSortBy(newSortBy)
+    setCurrentPage(1)
+  }
+
+  // Transform data
   const trending = (trendingRaw || []).map((coin: any) => ({
     id: coin.id,
     name: coin.name,
@@ -74,11 +85,19 @@ function App() {
     value: coin.volume24h,
   }))
 
+  const transformedVolatile = mostVolatile.map(coin => ({
+    id: coin.id,
+    name: coin.name,
+    symbol: coin.symbol,
+    image: coin.image,
+    value: Math.abs(coin.priceChangePercentage24h),
+    isPositive: coin.priceChangePercentage24h >= 0,
+  }))
+
   const displayData = hasSearchQuery ? searchResults : (coins || [])
   const totalPages = 100
   const totalItems = totalPages * COINS_PER_PAGE
 
-  
   // Loading state
   if (coinsLoading && !coins) {
     return (
@@ -115,10 +134,9 @@ function App() {
   return (
     <div className="min-h-screen bg-neutral-50">
       <div className="max-w-7xl mx-auto p-4 md:p-6">
-        {/* Header */}
         <header className="mb-4 md:mb-6">
           <h1 className="text-2xl md:text-4xl font-bold text-neutral-900 mb-2 flex items-center gap-2 md:gap-3">
-            <span className="text-primary-600">💰</span>
+            <span className="text-primary-600">~$~</span>
             Crypto Dashboard
           </h1>
           <p className="text-sm md:text-base text-neutral-600">
@@ -126,8 +144,7 @@ function App() {
           </p>
         </header>
 
-        {/* Stats Bar - Only show on 'all' tab */}
-        {activeTab === 'all' && (
+        
           <StatsBar
             totalMarketCap={globalStats?.totalMarketCap || 0}
             totalVolume={globalStats?.totalVolume || 0}
@@ -135,21 +152,34 @@ function App() {
             topGainers={topGainers}
             onMoreClick={() => setActiveTab('highlights')}
           />
-        )}
+        
 
-        {/* Navigation & Search */}
         <div className="mb-4 md:mb-6">
           <div className="bg-white rounded-t-xl border border-neutral-200 border-b-0">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between px-4 md:px-6 py-4 gap-4">
               <NavBar activeTab={activeTab} onTabChange={setActiveTab} />
-              <div className="w-full md:w-auto">
-                {activeTab === 'all' && <SearchBar onSearch={handleSearch} />}
+              <div className="flex items-center gap-3 w-full md:w-auto flex-wrap">
+                {activeTab === 'all' && (
+                  <>
+                    <div className="flex-1 md:flex-initial min-w-0">
+                      <SearchBar onSearch={handleSearch} />
+                    </div>
+                    {!hasSearchQuery && (
+                      <div className="flex-shrink-0">
+                        <SortDropdown 
+                          options={SORT_OPTIONS}
+                          value={sortBy}
+                          onChange={handleSortChange}
+                        />
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Content */}
         {activeTab === 'all' ? (
           <CoinTable
             data={displayData}
@@ -168,6 +198,7 @@ function App() {
               topLosers={transformedLosers}
               highestVolume={transformedVolume}
               trending={trending}
+              mostVolatile={transformedVolatile}
               loading={highlightsLoading}
               onCoinClick={handleCoinClickById}
             />
@@ -175,7 +206,6 @@ function App() {
         )}
       </div>
 
-      {/* Coin Detail Modal */}
       <CoinDetailModal coin={selectedCoin} onClose={() => setSelectedCoin(null)} />
     </div>
   )

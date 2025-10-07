@@ -16,6 +16,7 @@ interface HighlightsSectionProps {
   topLosers: HighlightCoin[]    
   highestVolume: HighlightCoin[]
   trending: HighlightCoin[]     
+  mostVolatile: HighlightCoin[]
   loading?: boolean
   onCoinClick?: (coinId: string) => void
 }
@@ -26,6 +27,7 @@ export const HighlightsSection = ({
   highestVolume,
   trending,
   loading,
+  mostVolatile,
   onCoinClick
 }: HighlightsSectionProps) => {
   return (
@@ -56,6 +58,13 @@ export const HighlightsSection = ({
         coins={trending}
         loading={loading}
         variant="trending"
+        onCoinClick={onCoinClick}
+      />
+      <HighlightCard
+        title="Most Volatile"
+        coins={mostVolatile}
+        loading={loading}
+        variant="volatile"
         onCoinClick={onCoinClick}
       />
     </div>

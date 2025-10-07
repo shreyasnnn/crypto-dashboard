@@ -8,7 +8,7 @@ interface CoinData {
   symbol: string
   image: string
   currentPrice: number
-  priceChangePercentage24h: number
+  priceChangePercentage24h: number | null  // ✅ Allow null
   marketCap: number
   volume24h: number
   sparkline?: number[]
@@ -20,7 +20,9 @@ interface CoinRowProps {
 }
 
 export const CoinRow = ({ coin, onClick }: CoinRowProps) => {
-  const isPositive = coin.priceChangePercentage24h >= 0
+  // ✅ Handle null/undefined with proper fallback
+  const priceChange = coin.priceChangePercentage24h ?? 0
+  const isPositive = priceChange >= 0
 
   return (
     <tr 
@@ -45,36 +47,42 @@ export const CoinRow = ({ coin, onClick }: CoinRowProps) => {
 
       {/* Price */}
       <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-right text-xs md:text-sm font-medium text-neutral-900">
-        ${coin.currentPrice.toLocaleString()}
+        ${(coin.currentPrice ?? 0).toLocaleString()}
       </td>
 
-      {/* 24h Change */}
+      {/* 24h Change - WITH NULL CHECK */}
       <td className="px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-right">
-        <Badge variant={isPositive ? 'success' : 'danger'} size="sm">
-          <span className={`font-semibold text-xs ${isPositive ? 'text-success-600' : 'text-danger-600'}`}>
-            {isPositive ? '+' : ''}{coin.priceChangePercentage24h.toFixed(2)}%
-          </span>
-        </Badge>
+        {coin.priceChangePercentage24h !== null && coin.priceChangePercentage24h !== undefined ? (
+          <Badge variant={isPositive ? 'success' : 'danger'} size="sm">
+            <span className={`font-semibold text-xs ${isPositive ? 'text-success-600' : 'text-danger-600'}`}>
+              {isPositive ? '+' : ''}{priceChange.toFixed(2)}%
+            </span>
+          </Badge>
+        ) : (
+          <span className="text-xs text-neutral-400">N/A</span>
+        )}
       </td>
 
       {/* Market Cap - Hidden on mobile/tablet */}
       <td className="hidden lg:table-cell px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
-        ${coin.marketCap.toLocaleString()}
+        ${(coin.marketCap ?? 0).toLocaleString()}
       </td>
 
       {/* Volume - Hidden on mobile/tablet/medium screens */}
       <td className="hidden xl:table-cell px-6 py-4 whitespace-nowrap text-right text-sm text-neutral-700">
-        ${coin.volume24h.toLocaleString()}
+        ${(coin.volume24h ?? 0).toLocaleString()}
       </td>
 
       {/* 7-Day Sparkline - Hidden on small screens */}
       <td className="hidden md:table-cell px-4 md:px-6 py-3 md:py-4 whitespace-nowrap text-right">
-        <Sparkline 
-          data={coin.sparkline || []} 
-          isPositive={isPositive}
-          width={120}
-          height={50}
-        />
+        <div className="flex justify-end">
+          <Sparkline 
+            data={coin.sparkline || []} 
+            isPositive={isPositive}
+            width={120}
+            height={50}
+          />
+        </div>
       </td>
     </tr>
   )
